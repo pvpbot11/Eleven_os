@@ -3,15 +3,24 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: { image: 'archlinux:latest', options: '--privileged' }
+    container:
+      image: archlinux:latest
+      options: --privileged
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          pacman -Syu --noconfirm archiso
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Mis à jour en v4
+      - name: Install Archiso
+        run: pacman -Syu --noconfirm archiso
+      - name: Build Eleven ISO
+        run: |
           cp -r /usr/share/archiso/configs/releng/ ./profile
           cp packages.x86_64 ./profile/
-          [ -d "airootfs" ] && cp -rv airootfs/* ./profile/airootfs/
+          if [ -d "airootfs" ]; then cp -rv airootfs/* ./profile/airootfs/; fi
+          # Active l'interface graphique
           ln -sf /usr/lib/systemd/system/lightdm.service ./profile/airootfs/etc/systemd/system/display-manager.service
           mkarchiso -v -w ./work -o ./out ./profile
-      - uses: actions/upload-artifact@v3
-        with: { name: Eleven-OS-ISO, path: out/*.iso }
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4 # Mis à jour en v4
+        with:
+          name: Eleven-OS-ISO
+          path: out/*.iso
