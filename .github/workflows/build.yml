@@ -1,0 +1,17 @@
+name: Build Eleven OS
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: { image: 'archlinux:latest', options: '--privileged' }
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          pacman -Syu --noconfirm archiso
+          cp -r /usr/share/archiso/configs/releng/ ./profile
+          cp packages.x86_64 ./profile/
+          [ -d "airootfs" ] && cp -rv airootfs/* ./profile/airootfs/
+          ln -sf /usr/lib/systemd/system/lightdm.service ./profile/airootfs/etc/systemd/system/display-manager.service
+          mkarchiso -v -w ./work -o ./out ./profile
+      - uses: actions/upload-artifact@v3
+        with: { name: Eleven-OS-ISO, path: out/*.iso }
