@@ -1,1 +1,13 @@
-base linux linux-firmware networkmanager lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xorg-server arc-gtk-theme papirus-icon-theme firefox vlc
+base
+linux
+linux-firmware
+networkmanager
+sudo
+nano
+gcc
+xorg-server
+xfce4
+xfce4-goodies
+lightdm
+lightdm-gtk-greeter
+firefox
