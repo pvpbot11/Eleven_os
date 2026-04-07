@@ -3,19 +3,11 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: { image: 'archlinux:latest', options: '--privileged' }
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install Archiso
-        run: pacman -Syu --noconfirm archiso
+
       - name: Build Eleven ISO
-        run: |
-          cp -r /usr/share/archiso/configs/releng/ ./profile
-          cp packages.x86_64 ./profile/
-          [ -d "airootfs" ] && cp -rv airootfs/* ./profile/airootfs/
-          ln -sf /usr/lib/systemd/system/lightdm.service ./profile/airootfs/etc/systemd/system/display-manager.service
-          mkarchiso -v -w ./work -o ./out ./profile
-      - name: Upload ISO
-        uses: actions/upload-artifact@v4
-        with: { name: Eleven-OS-ISO, path: out/*.iso }
+        uses: anton-sh6/arch-build-action@v2
+        with:
+          iso_name: Eleven-OS-v1
